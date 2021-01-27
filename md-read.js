@@ -48,6 +48,7 @@ turndownService.addRule('extendCodeBlock', {
 
 async function mdRead (url) {
   const text = await read(url)
+  if (!text) { return '' }
   const md = turndownService.turndown(text.content)
   return md
 }
