@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const mdRead = require('./md-read')
 
 const argv = require('yargs')

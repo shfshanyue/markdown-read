@@ -14,7 +14,11 @@ $ markdown https://www.example.com
 ## API
 
 ``` js
-const mdRead = require('markdown-read')
+const { readMd, readHtml } = require('markdown-read')
 
-mdRead('https://www.example.com').then(md => console.log(md))
+// read markdown from url
+readMd('https://www.example.com').then(md => console.log(md))
+
+// read readbility content from url
+readHtml('https://www.example.com').then(md => console.log(html))
 ```

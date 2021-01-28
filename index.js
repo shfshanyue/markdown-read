@@ -1,1 +1,2 @@
-module.exports = require('./md-read')
+exports.readMd = require('./md-read')
+exports.readHtml = require('./read')

@@ -7,7 +7,7 @@ async function read (url) {
   const doc = new JSDOM(html)
   const reader = new Readability(doc.window.document, {
     keepClasses: true,
-    debug: true
+    // debug: true
   })
 
   Readability.prototype.FLAG_STRIP_UNLIKELYS = 0
