@@ -1,5 +1,7 @@
 const read = require('./read')
 const TurndownService = require('turndown')
+const { tables } = require('turndown-plugin-gfm')
+
 
 const turndownService = new TurndownService({
   emDelimiter: '*',
@@ -34,6 +36,7 @@ turndownService.addRule('extendCodeBlock', {
   }
 })
 
+turndownService.use([tables])
 // turndownService.addRule('extendHashLink', {
 //   filter (node, options) {
 //     return (
