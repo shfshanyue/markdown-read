@@ -1,6 +1,6 @@
 {
   "name": "markdown-read",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "turn url or html file to markdown",
   "main": "index.js",
   "engines": {
