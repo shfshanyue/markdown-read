@@ -2,7 +2,6 @@ const read = require('./read')
 const TurndownService = require('turndown')
 const { tables } = require('turndown-plugin-gfm')
 
-
 const turndownService = new TurndownService({
   emDelimiter: '*',
   codeBlockStyle: 'fenced',
@@ -10,6 +9,8 @@ const turndownService = new TurndownService({
   headingStyle: 'atx',
   bulletListMarker: '+'
 })
+
+turndownService.use([tables])
 
 turndownService.addRule('extendCodeBlock', {
   filter (node, options) {
@@ -36,24 +37,25 @@ turndownService.addRule('extendCodeBlock', {
   }
 })
 
-turndownService.use([tables])
-// turndownService.addRule('extendHashLink', {
-//   filter (node, options) {
-//     return (
-//       node.nodeName === 'A' && node.getAttribute('href').startsWith('#')
-//     )
-//   },
-
-//   replacement (content) {
-//     return content
+// turndownService.addRule('extendImage', {
+//   filter: 'img',
+//   replacement (content, node) {
+//     const alt = cleanAttribute(node.getAttribute('alt'))
+//     const src = node.getAttribute('src') || ''
+//     const title = cleanAttribute(node.getAttribute('title'))
+//     const titlePart = title ? ' "' + title + '"' : ''
+//     return src ? '![' + alt + ']' + '(' + src + titlePart + ')' : ''
 //   }
 // })
 
-async function mdRead (url) {
-  const text = await read(url)
+async function mdRead (url, options) {
+  const text = await read(url, options)
   if (!text) { return '' }
-  const md = turndownService.turndown(text.content)
-  return md
+  return mdReadFromText(text.content)
+}
+
+function mdReadFromText (text) {
+  return turndownService.turndown(text)
 }
 
 module.exports = mdRead

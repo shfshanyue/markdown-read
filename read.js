@@ -2,11 +2,23 @@ const { Readability } = require('@mozilla/readability');
 const fetch = require('isomorphic-unfetch')
 const JSDOM = require('jsdom').JSDOM
 
-async function read (url) {
-  const html = await fetch(url).then(res => res.text())
-  const doc = new JSDOM(html)
-  const reader = new Readability(doc.window.document, {
+async function read (url, { debug, headers } = {}) {
+  const html = await fetch(url, { headers }).then(res => res.text())
+  const doc = new JSDOM(html, {
+    url
+  })
+  const document = doc.window.document
+
+  // Handle LazyLoad Image
+  for (const img of Array.from(document.getElementsByTagName('img'))) {
+    if (!img.getAttribute('src')) {
+      img.setAttribute('src', img.dataset.src)
+    }
+  }
+
+  const reader = new Readability(document, {
     keepClasses: true,
+    debug,
     // debug: true
   })
 

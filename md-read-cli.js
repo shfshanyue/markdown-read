@@ -9,6 +9,12 @@ const argv = require('yargs')
       type: 'string'
     })
   })
+  .boolean('debug')
+  .default('debug', false)
+  .describe('debug', 'Debug mode')
+  .array('header')
+  .default('header', [])
+  .describe('header', 'HTTP header')
   .check(argv => {
     if (!argv.url.startsWith('http')) {
       throw new Error('url must be URL!')
@@ -18,6 +24,15 @@ const argv = require('yargs')
   .help('help')
   .argv
 
-mdRead(argv.url).then(md => {
+
+
+mdRead(argv.url, {
+  debug: argv.debug,
+  headers: argv.header.reduce((acc, header)=> {
+    const [k, v] = header.split('=')
+    acc[k] = v
+    return acc
+  }, {})
+}).then(md => {
   process.stdout.write(md)
 })
