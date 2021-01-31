@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const mdRead = require('./md-read')
+const { readMd } = require('.')
 
 const argv = require('yargs')
   .usage('$0 <url>', 'Turn page url to markdown', yargs => {
@@ -26,7 +26,7 @@ const argv = require('yargs')
 
 
 
-mdRead(argv.url, {
+readMd(argv.url, {
   debug: argv.debug,
   headers: argv.header.reduce((acc, header)=> {
     const [k, v] = header.split('=')

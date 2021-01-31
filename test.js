@@ -1,7 +1,7 @@
 const { describe, it } = require('mocha')
 const { expect } = require('chai')
 
-const { readHtml, readMd } = require('.')
+const { readHtml, readMd, readMdFromText } = require('.')
 
 describe('readHtml', function () {
   this.timeout(60000)
@@ -16,5 +16,12 @@ describe('readHtml', function () {
 
     const r = await readMd('https://www.markdownguide.org/basic-syntax')
     expect(r).to.length.gt(100)
+  })
+
+  it('expect readMarkdown from html work', async () => {
+
+    const r = await readMdFromText('<h1>hello, world</h1>')
+    console.log(r)
+    expect(r).to.eq('# hello, world')
   })
 })

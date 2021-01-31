@@ -48,14 +48,17 @@ turndownService.addRule('extendCodeBlock', {
 //   }
 // })
 
-async function mdRead (url, options) {
+async function readMd (url, options) {
   const text = await read(url, options)
   if (!text) { return '' }
-  return mdReadFromText(text.content)
+  return readMdFromText(text.content)
 }
 
-function mdReadFromText (text) {
+function readMdFromText (text) {
   return turndownService.turndown(text)
 }
 
-module.exports = mdRead
+module.exports = {
+  readMd,
+  readMdFromText
+}
