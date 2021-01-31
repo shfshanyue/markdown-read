@@ -1,5 +1,3 @@
-const { readMd, readMdFromText } = require('./md-read')
 exports.readHtml = require('./read')
-
-exports.readMdFromText = readMdFromText
-exports.readMd = readMd
+exports.readMdFromText = require('./md-read-text')
+exports.readMd = require('./md-read')
