@@ -1,4 +1,4 @@
-const TurndownService = require('turndown')
+import TurndownService from 'turndown'
 const { tables } = require('turndown-plugin-gfm')
 
 const turndownService = new TurndownService({
@@ -13,7 +13,7 @@ turndownService.use([tables])
 
 turndownService.addRule('extendCodeBlock', {
   filter (node, options) {
-    return (
+    return Boolean(
       options.codeBlockStyle === 'fenced' &&
       node.nodeName === 'PRE' &&
       node.firstChild &&
@@ -22,9 +22,11 @@ turndownService.addRule('extendCodeBlock', {
   },
 
   replacement (content, node, options) {
-    const className = node.getAttribute('class') || node.firstChild.getAttribute('class') || ''
+    node = node as HTMLElement
+    const firstChild = (node.firstChild as any)
+    const className = node.getAttribute('class') || firstChild?.getAttribute('class') || ''
     const language = (className.match(/language-(\S+)/) || [null, ''])[1]
-    const code = node.firstChild.textContent
+    const code = firstChild?.textContent || ''
 
     const fence = options.fence
 
@@ -47,8 +49,8 @@ turndownService.addRule('extendCodeBlock', {
 //   }
 // })
 
-function readMdFromText (text) {
+function readMdFromText (text: string): string {
   return turndownService.turndown(text)
 }
 
-module.exports = readMdFromText
+export { readMdFromText }

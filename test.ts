@@ -1,7 +1,7 @@
-const { describe, it } = require('mocha')
-const { expect } = require('chai')
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
 
-const { readHtml, readMd, readMdFromText } = require('.')
+import { readHtml, readMd, readMdFromText } from '.'
 
 describe('readHtml', function () {
   this.timeout(60000)
@@ -9,7 +9,7 @@ describe('readHtml', function () {
   it('expect readHtml work', async () => {
 
     const r = await readHtml('https://juejin.cn/post/6922229465468633095')
-    expect(r.title).to.eq('山月最近的面试总结')
+    expect(r?.title).to.eq('山月最近的面试总结')
   })
 
   it('expect readMarkdown work', async () => {

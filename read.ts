@@ -1,8 +1,13 @@
-const { Readability } = require('@mozilla/readability');
-const fetch = require('isomorphic-unfetch')
-const JSDOM = require('jsdom').JSDOM
+import { Readability } from '@mozilla/readability'
+import { JSDOM } from 'jsdom'
+import fetch from 'isomorphic-unfetch'
 
-async function read (url, { debug, headers } = {}) {
+export interface ReadOptions {
+  debug?: boolean;
+  headers?: Headers;
+}
+
+async function read (url: string, { debug, headers }: ReadOptions = {}) {
   const html = await fetch(url, { headers }).then(res => res.text())
   const doc = new JSDOM(html, {
     url
@@ -12,7 +17,7 @@ async function read (url, { debug, headers } = {}) {
   // Handle LazyLoad Image
   for (const img of Array.from(document.getElementsByTagName('img'))) {
     if (!img.getAttribute('src')) {
-      img.setAttribute('src', img.dataset.src)
+      img.setAttribute('src', img.dataset?.src || '')
     }
   }
 
@@ -20,9 +25,9 @@ async function read (url, { debug, headers } = {}) {
     keepClasses: true,
     debug,
     // debug: true
-  })
+  });
 
-  Readability.prototype.FLAG_STRIP_UNLIKELYS = 0
+  (Readability.prototype as any).FLAG_STRIP_UNLIKELYS = 0
 
   // Readability.prototype.REGEXPS.unlikelyCandidates = /-ad-|ai2html|banner|breadcrumbs|combx|comment|community|cover-wrap|disqus|footer|gdpr|header|legends|menu|related|remark|replies|rss|shoutbox|sidebar|skyscraper|social|sponsor|supplemental|ad-break|agegate|pagination|pager|popup|yom-remote/i
 
@@ -31,4 +36,4 @@ async function read (url, { debug, headers } = {}) {
   return article
 }
 
-module.exports = read
+export { read }
