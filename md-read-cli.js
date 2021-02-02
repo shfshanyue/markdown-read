@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { readMd } = require('./lib')
+const { readMd } = require('./dist')
 
 const argv = require('yargs')
   .usage('$0 <url>', 'Turn page url to markdown', yargs => {
