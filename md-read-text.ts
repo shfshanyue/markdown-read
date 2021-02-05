@@ -11,7 +11,7 @@ const turndownService = new TurndownService({
 
 turndownService.use([tables])
 
-turndownService.addRule('extendCodeBlock', {
+turndownService.addRule('autoLanguage', {
   filter (node, options) {
     return Boolean(
       options.codeBlockStyle === 'fenced' &&
@@ -38,16 +38,14 @@ turndownService.addRule('extendCodeBlock', {
   }
 })
 
-// turndownService.addRule('extendImage', {
-//   filter: 'img',
-//   replacement (content, node) {
-//     const alt = cleanAttribute(node.getAttribute('alt'))
-//     const src = node.getAttribute('src') || ''
-//     const title = cleanAttribute(node.getAttribute('title'))
-//     const titlePart = title ? ' "' + title + '"' : ''
-//     return src ? '![' + alt + ']' + '(' + src + titlePart + ')' : ''
-//   }
-// })
+turndownService.addRule('removeHashLink', {
+  filter (node, options) {
+    return Boolean(node.nodeName === 'A' && node.getAttribute('href')?.startsWith('#'))
+  },
+  replacement (content, node) {
+    return ''
+  }
+})
 
 function readMdFromText (text: string): string {
   return turndownService.turndown(text)
