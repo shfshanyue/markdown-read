@@ -15,19 +15,16 @@ turndownService.addRule('autoLanguage', {
   filter (node, options) {
     return Boolean(
       options.codeBlockStyle === 'fenced' &&
-      node.nodeName === 'PRE' &&
-      node.firstChild &&
-      node.firstChild.nodeName === 'CODE'
+      node.nodeName === 'CODE' &&
+      (node.parentElement?.nodeName === 'PRE' || node.textContent?.includes('\n'))
     )
   },
 
   replacement (content, node, options) {
     node = node as HTMLElement
-    const firstChild = (node.firstChild as any)
-    const className = node.getAttribute('class') || firstChild?.getAttribute('class') || ''
+    const className = node.getAttribute('class') || node.parentElement?.getAttribute('class') || ''
     const language = (className.match(/language-(\S+)/) || [null, ''])[1]
-    const code = firstChild?.textContent || ''
-
+    const code = node.textContent || ''
     const fence = options.fence
 
     return (
