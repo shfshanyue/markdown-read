@@ -23,10 +23,13 @@ $ markdown https://shanyue.tech | head -10
 
 1. 掘金
 1. 知乎
-1. segmentfault
+1. 博客园
 1. 微信公众号平台
+1. Segmentfault
 1. Github
-1. Vuepress
+1. dev.to
+1. CSDN
+1. MDN
 
 ## API
 
