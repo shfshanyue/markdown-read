@@ -22,7 +22,7 @@ function handlePlatforms (document: Document) {
   return null
 }
 
-async function read (url: string, { debug, headers }: ReadOptions = {}) {
+async function readHtml (url: string, { debug, headers }: ReadOptions = {}) {
   const html = await fetch(url, { headers }).then(res => res.text())
   const doc = new JSDOM(html, {
     url
@@ -61,4 +61,4 @@ async function read (url: string, { debug, headers }: ReadOptions = {}) {
   return article
 }
 
-export { read }
+export { readHtml }
