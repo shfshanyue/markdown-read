@@ -11,7 +11,8 @@
   },
   "scripts": {
     "test": "mocha test.ts -r ts-node/register",
-    "build": "tsc"
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
   "bin": {
     "markdown": "./md-read-cli.js"
