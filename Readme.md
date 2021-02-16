@@ -1,8 +1,30 @@
 # Markdown Read
 
-Read Markdown from URL
+![Npm Version](https://badgen.net/npm/v/markdown-read)
+![Open Issues](https://badgen.net/github/open-issues/shfshanyue/markdown-read)
+![Star](https://badgen.net/github/stars/shfshanyue/markdown-read)
+![Npm Month Downloads](https://badgen.net/npm/dw/markdown-read)
+![Type Support](https://badgen.net/npm/types/markdown-read)
+![Node Version](https://badgen.net/npm/node/markdown-read)
+![Code Size](https://img.shields.io/github/languages/code-size/shfshanyue/markdown-read)
+![Install Size](https://badgen.net/packagephobia/install/markdown-read)
+![Publish Size](https://badgen.net/packagephobia/publish/markdown-read)
+![Minified Size](https://badgen.net/bundlephobia/min/markdown-read)
+![Gzip Size](https://badgen.net/bundlephobia/minzip/markdown-read)
+![Dependency Count](https://badgen.net/bundlephobia/dependency-count/markdown-read)
+![Tree Shaking Support](https://badgen.net/bundlephobia/tree-shaking/markdown-read)
 
+从任一网址获取 Markdown 的命令行工具，可在 [HTML To Markdown](https://devtool.tech/html-md) 线上试用及查看效果
+
+## Tech Stack
+
++ `@mozilla/readability` for read meaning html
++ `turndown` for html to markdown
+
+## Screenshots
 ## Usage
+
+使用 `npm -g` 全局安装命令
 
 ``` bash
 $ npm i -g markdown-read
@@ -19,7 +41,10 @@ $ markdown https://shanyue.tech | head -10
 ## 名字由来
 ```
 
-## Suport Platform
+## Chrome Extensions
+
+暂未支持
+## Support Plaforms
 
 1. 掘金
 1. 知乎
@@ -45,3 +70,19 @@ await readHtml('https://www.example.com')
 // read markdown from html
 const md = readMdFromText('<h1>hello, world</h1>')
 ```
+
+### readMd(url, options)
+
+#### url: string
+
+URL will trun to markdown.
+
+#### options.debug: boolean
+
+Debug mode
+#### options.headers: Headers
+
+Fetch request for URL with headers
+### readHtml(url, options)
+
+### readMdFromText(html)
