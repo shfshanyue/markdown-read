@@ -14,7 +14,9 @@
 ![Dependency Count](https://badgen.net/bundlephobia/dependency-count/markdown-read)
 ![Tree Shaking Support](https://badgen.net/bundlephobia/tree-shaking/markdown-read)
 
-从任一网址获取 Markdown 的命令行工具，可在 [HTML To Markdown](https://devtool.tech/html-md) 线上试用及查看效果
+Get mardown from ANY url.
+
+Demo Preview: [HTML To Markdown](https://devtool.tech/html-md)
 
 ## Tech Stack
 
@@ -22,9 +24,10 @@
 + `turndown` for html to markdown
 
 ## Screenshots
+
 ## Usage
 
-使用 `npm -g` 全局安装命令
+You will need Node.js installed on your system，then install it globally.
 
 ``` bash
 $ npm i -g markdown-read
@@ -43,7 +46,8 @@ $ markdown https://shanyue.tech | head -10
 
 ## Chrome Extensions
 
-暂未支持
+
+
 ## Support Plaforms
 
 1. 掘金
