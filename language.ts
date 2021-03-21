@@ -1,4 +1,19 @@
+export const LANGUAGES_FOR_PRETTIER = {
+  css: 'css',
+  less: 'less',
+  scss: 'scss',
+  sass: 'scss',
+  js: 'babel',
+  jsx: 'babel',
+  javascript: 'babel',
+  ts: 'typescript',
+  typescript: 'typescript',
+  json: 'json',
+  graphql: 'graphql'
+}
+
 export const LANGUAGES = [
+  ...Object.keys(LANGUAGES_FOR_PRETTIER),
   'auto',
   'apache',
   'shell',

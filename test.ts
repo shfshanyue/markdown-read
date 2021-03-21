@@ -22,7 +22,6 @@ describe('readHtml', function () {
 
     const r = await readMd('https://mp.weixin.qq.com/s/1Ze6aUAHNcWH9bVAhukaJg')
     // expect(r).to.length.gt(100)
-    console.log(r)
   })
 
   it('expect readMarkdown from html work', async () => {

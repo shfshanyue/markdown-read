@@ -1,5 +1,6 @@
+import prettier from 'prettier'
 import TurndownService from 'turndown'
-import { LANGUAGES } from './language'
+import { LANGUAGES, LANGUAGES_FOR_PRETTIER } from './language'
 
 const { tables } = require('turndown-plugin-gfm')
 
@@ -41,10 +42,30 @@ turndownService.addRule('autoLanguage', {
       detectLanguage(className)
     const code = node.textContent || ''
     const fence = options.fence
+    const parser = (LANGUAGES_FOR_PRETTIER as any)[language]
+    
+    // console.log('---', language, parser)
+
+    let codeParsed
+    try {
+      if (!parser) throw Error('no parser')
+      codeParsed = prettier.format(code, {
+        parser
+      })
+    } catch (e) {
+      codeParsed = code.replace(/\n$/, '')
+
+      if (e.message !== 'no parser') {
+        // console.log(node.textContent)
+        // console.log(e)
+      }
+    }
+
+    // console.log(codeParsed)
 
     return (
       '\n\n' + fence + ' ' + language + '\n' +
-      code.replace(/\n$/, '') +
+      codeParsed +
       '\n' + fence + '\n\n'
     )
   }
