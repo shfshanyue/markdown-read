@@ -18,6 +18,13 @@ describe('readHtml', function () {
     expect(r).to.length.gt(100)
   })
 
+  it('expect readMarkdown from mp.weixin work', async () => {
+
+    const r = await readMd('https://mp.weixin.qq.com/s/1Ze6aUAHNcWH9bVAhukaJg')
+    // expect(r).to.length.gt(100)
+    console.log(r)
+  })
+
   it('expect readMarkdown from html work', async () => {
 
     const r = await readMdFromText('<h1>hello, world</h1>')

@@ -35,12 +35,15 @@ turndownService.addRule('autoLanguage', {
   replacement (content, node, options) {
     node = node as HTMLElement
     const className = [node.className, node.firstElementChild?.className].join(' ')
-    const language = (className.match(/language-(\S+)/) || [null, detectLanguage(className)])[1]
+    const language = 
+      node.getAttribute('data-lang') ||
+      (className.match(/language-(\S+)/) ? RegExp.$1 : null) ||
+      detectLanguage(className)
     const code = node.textContent || ''
     const fence = options.fence
 
     return (
-      '\n\n' + fence + language + '\n' +
+      '\n\n' + fence + ' ' + language + '\n' +
       code.replace(/\n$/, '') +
       '\n' + fence + '\n\n'
     )
