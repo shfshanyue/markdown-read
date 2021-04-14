@@ -32,6 +32,8 @@ async function readHtml (url: string, { debug, headers }: ReadOptions = {}) {
   // Handle LazyLoad Image
   for (const img of Array.from(document.getElementsByTagName('img'))) {
     if (!img.getAttribute('src')) {
+      // readbility 将会拿到 lazy 的 class，重新处理懒加载
+      img.removeAttribute('class')
       img.setAttribute('src', img.dataset?.src || '')
     }
   }
