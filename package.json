@@ -1,6 +1,6 @@
 {
   "name": "markdown-read",
-  "version": "2.2.6",
+  "version": "2.2.7",
   "description": "turn url or html file to markdown",
   "main": "./dist/index.js",
   "files": [
@@ -15,7 +15,7 @@
     "prepublishOnly": "npm run build"
   },
   "bin": {
-    "markdown": "./md-read-cli.js"
+    "markdown": "md-read-cli.js"
   },
   "author": "shanyue",
   "license": "ISC",
