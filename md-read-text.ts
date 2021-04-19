@@ -1,5 +1,15 @@
+import prettier from 'prettier'
 import TurndownService from 'turndown'
-import { LANGUAGES } from './language'
+import { LANGUAGES, LANGUAGES_FOR_PRETTIER } from './language'
+
+import yargs from 'yargs'
+
+export interface MDReadOptions {
+  /** 是否格式化 md 中的 blockCode */
+  formatCode: boolean;
+}
+
+const argv = yargs.argv as Partial<MDReadOptions>
 
 const { tables } = require('turndown-plugin-gfm')
 
@@ -35,13 +45,37 @@ turndownService.addRule('autoLanguage', {
   replacement (content, node, options) {
     node = node as HTMLElement
     const className = [node.className, node.firstElementChild?.className].join(' ')
-    const language = (className.match(/language-(\S+)/) || [null, detectLanguage(className)])[1]
+    const language = 
+      node.getAttribute('data-lang') ||
+      (className.match(/language-(\S+)/) ? RegExp.$1 : null) ||
+      detectLanguage(className)
     const code = node.textContent || ''
     const fence = options.fence
+    const parser = (LANGUAGES_FOR_PRETTIER as any)[language]
+    
+    // console.log('---', language, parser)
+
+    let codeParsed
+    try {
+      if (!argv.formatCode) throw Error('no format')
+      if (!parser) throw Error('no parser')
+      codeParsed = prettier.format(code, {
+        parser
+      })
+    } catch (e) {
+      codeParsed = code.replace(/\n$/, '')
+
+      if (!['no format', 'no parser'].includes(e.message)) {
+        // console.log(node.textContent)
+        // console.log(e)
+      }
+    }
+
+    // console.log(codeParsed)
 
     return (
-      '\n\n' + fence + language + '\n' +
-      code.replace(/\n$/, '') +
+      '\n\n' + fence + ' ' + language + '\n' +
+      codeParsed +
       '\n' + fence + '\n\n'
     )
   }

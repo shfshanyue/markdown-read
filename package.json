@@ -12,7 +12,8 @@
   "scripts": {
     "test": "mocha test.ts -r ts-node/register",
     "build": "rm -rf dist && tsc",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test:bin": "npm run build && node ./md-read-cli.js 'https://mp.weixin.qq.com/s/1Ze6aUAHNcWH9bVAhukaJg' --format-code > dist/test-bin.md"
   },
   "bin": {
     "markdown": "./md-read-cli.js"
@@ -22,21 +23,23 @@
   "dependencies": {
     "@mozilla/readability": "^0.4.1",
     "isomorphic-unfetch": "^3.1.0",
-    "jsdom": "^16.4.0",
+    "jsdom": "^16.5.3",
+    "prettier": "^2.2.1",
     "turndown": "^7.0.0",
     "turndown-plugin-gfm": "^1.0.2",
     "unfetch": "^4.2.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.14",
-    "@types/jsdom": "^16.2.6",
-    "@types/mocha": "^8.2.0",
+    "@types/chai": "^4.2.16",
+    "@types/jsdom": "^16.2.10",
+    "@types/mocha": "^8.2.2",
+    "@types/prettier": "^2.2.3",
     "@types/turndown": "^5.0.0",
-    "chai": "^4.2.0",
-    "mocha": "^8.2.1",
-    "npm-check-updates": "^11.1.1",
-    "typescript": "^4.1.3",
+    "chai": "^4.3.4",
+    "mocha": "^8.3.2",
+    "npm-check-updates": "^11.4.1",
     "ts-node": "^9.1.1",
+    "typescript": "^4.2.4",
     "yargs": "^16.2.0"
   }
 }

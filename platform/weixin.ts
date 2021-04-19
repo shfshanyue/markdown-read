@@ -6,7 +6,7 @@ export const processDocument = (document: Document) => {
   document.querySelectorAll('pre > code').forEach(code => {
     // maybe mdnice format
     code.innerHTML = code.innerHTML.replace(/<br>/g, '\n')
-    code.innerHTML = (code as any).innerText || code.innerHTML
+    code.innerHTML = (code as HTMLElement).innerText || code.innerHTML
   })
 }
 

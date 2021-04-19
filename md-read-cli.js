@@ -21,6 +21,8 @@ const argv = require('yargs')
     }
     return true
   })
+  .boolean('format-code')
+  .describe('format-code', 'Use prettier to format block-code in markdown')
   .help('help')
   .argv
 
@@ -32,7 +34,8 @@ readMd(argv.url, {
     const [k, v] = header.split('=')
     acc[k] = v
     return acc
-  }, {})
+  }, {}),
+  formatCode: argv['format-code']
 }).then(md => {
   process.stdout.write(md)
 })
