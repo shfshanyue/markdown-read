@@ -2,6 +2,15 @@ import prettier from 'prettier'
 import TurndownService from 'turndown'
 import { LANGUAGES, LANGUAGES_FOR_PRETTIER } from './language'
 
+import yargs from 'yargs'
+
+export interface MDReadOptions {
+  /** 是否格式化 md 中的 blockCode */
+  formatCode: boolean;
+}
+
+const argv = yargs.argv as Partial<MDReadOptions>
+
 const { tables } = require('turndown-plugin-gfm')
 
 function detectLanguage (className: string): string {
@@ -48,6 +57,7 @@ turndownService.addRule('autoLanguage', {
 
     let codeParsed
     try {
+      if (!argv.formatCode) throw Error('no format')
       if (!parser) throw Error('no parser')
       codeParsed = prettier.format(code, {
         parser
@@ -55,7 +65,7 @@ turndownService.addRule('autoLanguage', {
     } catch (e) {
       codeParsed = code.replace(/\n$/, '')
 
-      if (e.message !== 'no parser') {
+      if (!['no format', 'no parser'].includes(e.message)) {
         // console.log(node.textContent)
         // console.log(e)
       }
