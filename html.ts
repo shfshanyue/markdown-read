@@ -40,7 +40,8 @@ async function readHtml (url: string, { debug, headers }: ReadOptions = {}) {
 
   const platform = handlePlatforms(document)
   platform?.processDocument(document)
-  // is skip Readaility process
+
+  // Is skip Readaility process
   const skip = platform?.skip
 
   if (skip) {
