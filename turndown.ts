@@ -60,4 +60,6 @@ function readMdFromText (text: string): string {
   return turndownService.turndown(text)
 }
 
-export { readMdFromText }
+const turndown = readMdFromText
+
+export { readMdFromText, turndown }

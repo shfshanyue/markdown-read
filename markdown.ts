@@ -1,5 +1,5 @@
 import { ReadOptions, readHtml } from './html'
-import { readMdFromText } from './md-read-text'
+import { readMdFromText } from './turndown'
 
 async function readMd (url: string, options?: ReadOptions): Promise<string> {
   const text = await readHtml(url, options)

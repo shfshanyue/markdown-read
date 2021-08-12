@@ -27,6 +27,7 @@
     "turndown-plugin-gfm": "^1.0.2",
     "unfetch": "^4.2.0"
   },
+  "repository": "shfshanyue/markdown-read",
   "devDependencies": {
     "@types/chai": "^4.2.21",
     "@types/jsdom": "^16.2.13",
