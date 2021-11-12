@@ -10,7 +10,7 @@ const noop = () => {}
 
 export interface ReadOptions {
   debug?: boolean;
-  headers?: Headers;
+  headers?: Record<string, any>
 }
 
 function handlePlatforms (document: Document) {
@@ -22,8 +22,13 @@ function handlePlatforms (document: Document) {
   return null
 }
 
-async function readHtml (url: string, { debug, headers }: ReadOptions = {}) {
-  const html = await fetch(url, { headers }).then(res => res.text())
+async function readHtml (url: string, { debug, headers = {} }: ReadOptions = {}) {
+  const html = await fetch(url, {
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36',
+      ...headers
+    }
+  }).then(res => res.text())
   const doc = new JSDOM(html, {
     url
   })
