@@ -47,19 +47,8 @@ turndownService.addRule('autoLanguage', {
   }
 })
 
-turndownService.addRule('removeHashLink', {
-  filter (node, options) {
-    return Boolean(node.nodeName === 'A' && node.getAttribute('href')?.startsWith('#'))
-  },
-  replacement (content, node) {
-    return ''
-  }
-})
-
-function readMdFromText (text: string): string {
+function turndown (text: string): string {
   return turndownService.turndown(text)
 }
 
-const turndown = readMdFromText
-
-export { readMdFromText, turndown }
+export { turndown }

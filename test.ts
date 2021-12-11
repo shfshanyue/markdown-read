@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 
-import { readHtml, readMd, readMdFromText } from '.'
+import { readHtml, readMd, turndown } from '.'
 
 describe('readHtml', function () {
   this.timeout(60000)
@@ -9,18 +9,18 @@ describe('readHtml', function () {
   it('expect readHtml work', async () => {
 
     const r = await readHtml('https://juejin.cn/post/6922229465468633095')
-    expect(r?.title).to.eq('山月最近的面试总结')
+    expect(r?.title).to.eq('山月最近的面试总结 - 掘金')
   })
 
-  it('expect readMarkdown work', async () => {
+  it('expect read markdown from url work', async () => {
 
     const r = await readMd('https://www.markdownguide.org/basic-syntax')
     expect(r).to.length.gt(100)
   })
 
-  it('expect readMarkdown from html work', async () => {
+  it('expect read markdown from html work', async () => {
 
-    const r = await readMdFromText('<h1>hello, world</h1>')
+    const r = await turndown('<h1>hello, world</h1>')
     console.log(r)
     expect(r).to.eq('# hello, world')
   })
