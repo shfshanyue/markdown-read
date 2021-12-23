@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { markdown } from '..'
+import { markdown } from '.'
 import yargs from 'yargs'
 
 const argv = yargs

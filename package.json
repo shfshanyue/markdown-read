@@ -15,7 +15,7 @@
     "prepublishOnly": "npm run build"
   },
   "bin": {
-    "markdown": "dist/cli/markdown.js"
+    "markdown": "dist/cli.js"
   },
   "author": "shanyue",
   "license": "ISC",
