@@ -10,12 +10,7 @@ interface MarkdownContent {
 }
 
 async function markdown(url: string, options?: ReadOptions): Promise<MarkdownContent | null> {
-  let doc
-  if (process.env.BROWSER) {
-    doc = document
-  } else {
-    doc = await getDocument(url, options)
-  }
+  const doc = await getDocument(url, options)
   const data = readability(doc)
   if (!data) { return null }
   return {

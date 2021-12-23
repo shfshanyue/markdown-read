@@ -1,38 +1,42 @@
 #!/usr/bin/env node
 
-const { readMd } = require('./dist')
+import { markdown } from '..'
+import yargs from 'yargs'
 
-const argv = require('yargs')
-  .usage('$0 <url>', 'Turn page url to markdown', yargs => {
-    yargs.positional('url', {
+const argv = yargs
+  .scriptName('markdown')
+  .command('$0 <url>', 'Turn URL to markdown', yargs => {
+    return yargs.positional('url', {
       describe: 'URL to markdown',
       type: 'string'
     })
   })
-  .boolean('debug')
-  .default('debug', false)
-  .describe('debug', 'Debug mode')
-  .array('header')
-  .default('header', [])
-  .describe('header', 'HTTP header')
-  .check(argv => {
-    if (!argv.url.startsWith('http')) {
-      throw new Error('url must be URL!')
+  .options({
+    debug: {
+      type: 'boolean',
+      default: false
+    },
+    header: {
+      type: 'array',
+      default: [],
     }
-    return true
   })
+  .demandOption(['url'])
+  // .check(argv => {
+  //   if (!argv.url.startsWith('http')) {
+  //     console.log(argv.url)
+  //     throw new Error('URL must start with http')
+  //   }
+  // })
   .help('help')
-  .argv
+  .parseSync()
 
-
-
-readMd(argv.url, {
-  debug: argv.debug,
-  headers: argv.header.reduce((acc, header)=> {
+markdown(argv.url, {
+  headers: (argv.header as string[]).reduce((acc, header)=> {
     const [k, v] = header.split('=')
     acc[k] = v
     return acc
-  }, {})
-}).then(md => {
-  process.stdout.write(md)
+  }, {} as Record<string, string>)
+}).then(content => {
+  process.stdout.write(content?.markdown || '')
 })
