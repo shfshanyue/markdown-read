@@ -31,7 +31,7 @@ const argv = yargs
   .help('help')
   .parseSync()
 
-markdown(argv.url, {
+markdown(argv.url as string, {
   headers: (argv.header as string[]).reduce((acc, header)=> {
     const [k, v] = header.split('=')
     acc[k] = v
