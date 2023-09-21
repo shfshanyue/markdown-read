@@ -1,6 +1,4 @@
 import { JSDOM } from 'jsdom'
-import fetch from 'isomorphic-unfetch'
-
 export interface ReadOptions {
   headers?: Record<string, any>
 }

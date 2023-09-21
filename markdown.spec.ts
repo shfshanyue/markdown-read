@@ -10,7 +10,7 @@ describe('markdown', function () {
 
   it('expect markdown work', async () => {
 
-    const r = await markdown('https://www.markdownguide.org/basic-syntax')
+    const r = await markdown('https://juejin.cn/post/6922229465468633095')
     expect(r?.markdown).to.length.gt(100)
   })
 
