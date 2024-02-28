@@ -14,14 +14,15 @@ const noop = () => { }
 
 function handlePlatforms(document: Document) {
   for (const platform of platforms) {
-    if (platform.filter(document)) {
+    const url = new URL(document.URL)
+    if (platform.filter(document, url)) {
       return platform
     }
   }
   return null
 }
 
-function readability(document: Document, { debug }: { debug: boolean } = { debug: false }): Content | null {
+async function readability(document: Document, { debug }: { debug: boolean } = { debug: false }): Promise<Content | null> {
   // Handle LazyLoad Image
   for (const img of Array.from(document.getElementsByTagName('img'))) {
     if (!img.getAttribute('src')) {
@@ -34,7 +35,7 @@ function readability(document: Document, { debug }: { debug: boolean } = { debug
   const byline = document.querySelector('meta[itemprop=name]')?.getAttribute('content') || ''
 
   const platform = handlePlatforms(document)
-  platform?.processDocument(document)
+  await platform?.processDocument(document)
 
   // Is skip Readaility process
   const skip = platform?.skip

@@ -63,30 +63,10 @@ $ markdown https://shanyue.tech | head -10
 ## API
 
 ``` js
-const { readMd, readHtml, readMdFromText } = require('markdown-read')
+const { markdown, turndown } = require('markdown-read')
 
 // read markdown from url
-await readMd('https://www.example.com')
+await markdown('https://www.example.com')
 
-// read readbility content from url
-await readHtml('https://www.example.com')
-
-// read markdown from html
-const md = readMdFromText('<h1>hello, world</h1>')
+await turndown('<h1>hello, world</h1>')
 ```
-
-### readMd(url, options)
-
-#### url: string
-
-URL will trun to markdown.
-
-#### options.debug: boolean
-
-Debug mode
-#### options.headers: Headers
-
-Fetch request for URL with headers
-### readHtml(url, options)
-
-### readMdFromText(html)

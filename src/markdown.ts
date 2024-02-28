@@ -11,7 +11,7 @@ interface MarkdownContent {
 
 async function markdown(url: string, options?: ReadOptions): Promise<MarkdownContent | null> {
   const doc = await getDocument(url, options)
-  const data = readability(doc)
+  const data = await readability(doc)
   if (!data) { return null }
   return {
     markdown: turndown(data.content),
