@@ -41,9 +41,9 @@ function parseArguments() {
 
 function parseHeaders(headerArgs: string[]): Record<string, string> {
   return headerArgs.reduce((acc, header) => {
-    const [key, value] = header.split(':')
-    if (key && value) {
-      acc[key.trim()] = value.trim()
+    const [key, ...value] = header.split(':')
+    if (key && value.length > 0) {
+      acc[key.trim()] = value.join(':').trim()
     }
     return acc
   }, {} as Record<string, string>)
