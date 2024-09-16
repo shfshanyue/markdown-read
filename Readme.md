@@ -1,27 +1,27 @@
 # Markdown Read
 
-![Npm Version](https://badgen.net/npm/v/markdown-read)
-![Open Issues](https://badgen.net/github/open-issues/shfshanyue/markdown-read)
-![Star](https://badgen.net/github/stars/shfshanyue/markdown-read)
-![Npm Month Downloads](https://badgen.net/npm/dw/markdown-read)
-![Type Support](https://badgen.net/npm/types/markdown-read)
-![Node Version](https://badgen.net/npm/node/markdown-read)
-![Code Size](https://img.shields.io/github/languages/code-size/shfshanyue/markdown-read)
-![Install Size](https://badgen.net/packagephobia/install/markdown-read)
-![Publish Size](https://badgen.net/packagephobia/publish/markdown-read)
-![Minified Size](https://badgen.net/bundlephobia/min/markdown-read)
-![Gzip Size](https://badgen.net/bundlephobia/minzip/markdown-read)
-![Dependency Count](https://badgen.net/bundlephobia/dependency-count/markdown-read)
-![Tree Shaking Support](https://badgen.net/bundlephobia/tree-shaking/markdown-read)
+[![npm version](https://img.shields.io/npm/v/markdown-read.svg)](https://www.npmjs.com/package/markdown-read)
+[![GitHub issues](https://img.shields.io/github/issues/shfshanyue/markdown-read.svg)](https://github.com/shfshanyue/markdown-read/issues)
+[![GitHub stars](https://img.shields.io/github/stars/shfshanyue/markdown-read.svg)](https://github.com/shfshanyue/markdown-read/stargazers)
+[![npm downloads](https://img.shields.io/npm/dm/markdown-read.svg)](https://www.npmjs.com/package/markdown-read)
+[![TypeScript](https://img.shields.io/npm/types/markdown-read.svg)](https://www.npmjs.com/package/markdown-read)
+[![node version](https://img.shields.io/node/v/markdown-read.svg)](https://www.npmjs.com/package/markdown-read)
+[![code size](https://img.shields.io/github/languages/code-size/shfshanyue/markdown-read.svg)](https://github.com/shfshanyue/markdown-read)
+[![install size](https://packagephobia.now.sh/badge?p=markdown-read)](https://packagephobia.now.sh/result?p=markdown-read)
+[![npm bundle size](https://img.shields.io/bundlephobia/min/markdown-read.svg)](https://bundlephobia.com/result?p=markdown-read)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/markdown-read.svg)](https://bundlephobia.com/result?p=markdown-read)
+[![dependencies](https://img.shields.io/badge/dependencies-2-brightgreen.svg)](https://github.com/shfshanyue/markdown-read/blob/master/package.json)
+[![tree shaking](https://badgen.net/bundlephobia/tree-shaking/markdown-read)](https://bundlephobia.com/result?p=markdown-read)
 
-Get mardown from ANY url.
+Convert any URL to Markdown.
 
-Demo Preview: [HTML To Markdown](https://devtool.tech/html-md)
+[Try it online: HTML To Markdown](https://devtool.tech/html-md)
 
 ## Tech Stack
 
 + `@mozilla/readability` for read meaning html
 + `turndown` for html to markdown
++ `jsdom` for parse html
 
 ## Usage
 
