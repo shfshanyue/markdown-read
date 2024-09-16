@@ -5,7 +5,7 @@ describe('markdown', function () {
   it('expect readability work', async () => {
     const doc = await getDocument('https://juejin.cn/post/6922229465468633095')
     const r = await readability(doc)
-    expect(r?.title).to.eq('山月最近的面试总结 - 掘金')
+    expect(r?.title).to.eq('山月最近的面试总结提供一个较少提过的方法，使用 grid，它是做二维布局的，但是只有一个子元素时，一维布局与二维布局就一 - 掘金')
     expect(r?.byline).to.eq('程序员山月')
   })
 
