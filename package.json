@@ -3,6 +3,7 @@
   "version": "3.3.0",
   "description": "turn url or html file to markdown",
   "main": "./dist/index.js",
+  "packageManager": "pnpm@9.9.0",
   "files": [
     "dist"
   ],
