@@ -2,41 +2,74 @@
 
 import { markdown } from '.'
 import yargs from 'yargs'
+import { hideBin } from 'yargs/helpers'
 
-const argv = yargs
-  .scriptName('markdown')
-  .command('$0 <url>', 'Turn URL to markdown', yargs => {
-    return yargs.positional('url', {
-      describe: 'URL to markdown',
-      type: 'string'
+function parseArguments() {
+  return yargs(hideBin(process.argv))
+    .scriptName('markdown')
+    .command('$0 <url>', 'Convert URL to markdown', yargs => {
+      return yargs.positional('url', {
+        describe: 'URL to convert to markdown',
+        type: 'string',
+        demandOption: true
+      })
     })
-  })
-  .options({
-    debug: {
-      type: 'boolean',
-      default: false
-    },
-    header: {
-      type: 'array',
-      default: [],
-    }
-  })
-  .demandOption(['url'])
-  // .check(argv => {
-  //   if (!argv.url.startsWith('http')) {
-  //     console.log(argv.url)
-  //     throw new Error('URL must start with http')
-  //   }
-  // })
-  .help('help')
-  .parseSync()
+    .options({
+      debug: {
+        type: 'boolean',
+        default: false,
+        describe: 'Enable debug mode'
+      },
+      header: {
+        type: 'array',
+        default: [],
+        describe: 'Custom headers (format: key=value)'
+      }
+    })
+    .check((argv): boolean => {
+      if (typeof argv.url !== 'string' || !argv.url.startsWith('http')) {
+        throw new Error('URL must be a string starting with http or https')
+      }
+      return true
+    })
+    .help()
+    .alias('help', 'h')
+    .version()
+    .alias('version', 'v')
+    .parse()
+}
 
-markdown(argv.url as string, {
-  headers: (argv.header as string[]).reduce((acc, header)=> {
-    const [k, v] = header.split('=')
-    acc[k] = v
+function parseHeaders(headerArgs: string[]): Record<string, string> {
+  return headerArgs.reduce((acc, header) => {
+    const [key, value] = header.split('=')
+    if (key && value) {
+      acc[key.trim()] = value.trim()
+    }
     return acc
   }, {} as Record<string, string>)
-}).then(content => {
-  process.stdout.write(content?.markdown || '')
+}
+
+async function convertUrlToMarkdown(url: string, headers: Record<string, string>) {
+  try {
+    const content = await markdown(url, { headers })
+    if (content?.markdown) {
+      console.log(content.markdown)
+    } else {
+      console.error('Failed to generate markdown content.')
+    }
+  } catch (error) {
+    console.error('Error:', (error as Error).message)
+    process.exit(1)
+  }
+}
+
+async function main() {
+  const argv = await parseArguments()
+  const headers = parseHeaders(argv.header as string[])
+  await convertUrlToMarkdown(argv.url as string, headers)
+}
+
+main().catch(error => {
+  console.error('Unhandled error:', error)
+  process.exit(1)
 })
