@@ -1,5 +1,5 @@
 import { readability, markdown, turndown, getDocument } from './src'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 
 describe('markdown', function () {
   it('expect readability work', async () => {
@@ -23,5 +23,36 @@ describe('markdown', function () {
   it('expect read markdown from node weekly', async () => {
     const r = await markdown('https://nodeweekly.com/issues/522')
     expect(r?.title).to.eq('Node Weekly Issue 522: February 27, 2024')
+  })
+
+})
+
+describe('getDocument', () => {
+  it('should fetch and parse HTML document', async () => {
+    const doc = await getDocument('https://example.com')
+    expect(doc.querySelector('title')?.textContent).to.eq('Example Domain')
+  })
+
+  it('should use custom headers when provided', async () => {
+    const customHeaders = { 'X-Custom-Header': 'Test' }
+    const doc = await getDocument('https://httpbin.org/headers', { headers: customHeaders })
+    const responseBody = JSON.parse(doc.body.textContent || '{}')
+    expect(responseBody.headers['X-Custom-Header']).to.eq('Test')
+  })
+
+  it('should use default User-Agent when no headers provided', async () => {
+    const doc = await getDocument('https://httpbin.org/user-agent')
+    const responseBody = JSON.parse(doc.body.textContent || '{}')
+    expect(responseBody['user-agent']).to.include('Googlebot')
+  })
+
+  it('should use custom fetcher when provided', async () => {
+    const mockHtml = '<html><body><h1>Custom Fetcher Test</h1></body></html>'
+    const customFetcher = vi.fn().mockResolvedValue(mockHtml)
+    
+    const doc = await getDocument('https://example.com', { fetcher: customFetcher })
+    
+    expect(customFetcher).toHaveBeenCalledWith('https://example.com')
+    expect(doc.querySelector('h1')?.textContent).to.eq('Custom Fetcher Test')
   })
 })

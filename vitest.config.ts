@@ -6,6 +6,7 @@ export default defineConfig({
     globals: true,
     coverage: {
       reporter: ['text'] // https://vitest.dev/guide/coverage.html#coverage-setup
-    }
+    },
+    testTimeout: 20000,
   },
 })
