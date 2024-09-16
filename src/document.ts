@@ -16,10 +16,14 @@ export interface ReadOptions {
  */
 async function getDocument(url: string, { headers = {}, fetcher }: ReadOptions = {}) {
   const defaultFetcher = async (url: string) => {
+    const lowercaseHeaders = Object.fromEntries(
+      Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value])
+    );
+    
     const response = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
-        ...headers
+        'user-agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+        ...lowercaseHeaders
       }
     })
     return response.text()

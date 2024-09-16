@@ -23,7 +23,7 @@ function parseArguments() {
       header: {
         type: 'array',
         default: [],
-        describe: 'Custom headers (format: key=value)'
+        describe: 'Custom headers (format: key: value)'
       }
     })
     .check((argv): boolean => {
@@ -41,7 +41,7 @@ function parseArguments() {
 
 function parseHeaders(headerArgs: string[]): Record<string, string> {
   return headerArgs.reduce((acc, header) => {
-    const [key, value] = header.split('=')
+    const [key, value] = header.split(':')
     if (key && value) {
       acc[key.trim()] = value.trim()
     }

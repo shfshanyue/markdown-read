@@ -23,32 +23,35 @@ Demo Preview: [HTML To Markdown](https://devtool.tech/html-md)
 + `@mozilla/readability` for read meaning html
 + `turndown` for html to markdown
 
-## Screenshots
-
 ## Usage
 
-You will need Node.js installed on your system，then install it globally.
+You will need Node.js installed on your system, then install it globally.
 
 ``` bash
 $ npm i -g markdown-read
 
 # Turn current page to markdown
-$ markdown https://shanyue.tech | head -10
-## [#](#山月的琐碎博客记录) 山月的琐碎博客记录
+$ markdown https://example.com
+## Example Domain
 
-关于平常工作中在前端，后端以及运维中遇到问题的一些文章总结。以后也会做系列文章进行输出，如前端高级进阶系列，个人服务器指南系列。
+This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.
 
-+   **[阿里云新人优惠服务器 (opens new window)](https://www.aliyun.com/1111/pintuan-share?ptCode=MTY5MzQ0Mjc1MzQyODAwMHx8MTE0fDE%3D&userCode=4sm8juxu)**
-+   **[跟着山月管理个人服务器 (opens new window)](https://shanyue.tech/op/)**
-
-## 名字由来
+[More information...](https://www.iana.org/domains/example)
 ```
 
-## Chrome Extensions
+### Options
 
+- `--header`: Add custom headers to the request. This can be useful for setting user-agent strings or other HTTP headers required by the target website.
 
+Example:
+
+``` bash
+$ markdown https://httpbin.org/get --header 'User-Agent: Markdown Reader'
+```
 
 ## Support Plaforms
+
+markdown-read includes special handling for various platforms, including:
 
 1. 掘金
 1. 知乎
@@ -60,13 +63,32 @@ $ markdown https://shanyue.tech | head -10
 1. CSDN
 1. MDN
 
-## API
 
-``` js
-const { markdown, turndown } = require('markdown-read')
+## API Reference
 
-// read markdown from url
-await markdown('https://www.example.com')
+### `markdown(url: string, options?: ReadOptions): Promise<MarkdownContent | null>`
 
-await turndown('<h1>hello, world</h1>')
-```
+Converts a web page to Markdown format.
+
+- `url`: The URL of the web page to convert
+- `options`: Optional settings for document retrieval
+  - `headers`: Additional headers to include in the request
+  - `fetcher`: Custom function to fetch the HTML content
+
+Returns a Promise that resolves to a `MarkdownContent` object or `null` if conversion fails.
+
+### `turndown(html: string): string`
+
+Converts HTML content to Markdown.
+
+- `html`: The HTML string to convert
+
+Returns the Markdown representation of the input HTML.
+
+## Advanced Features
+
+- Handles lazy-loaded images by setting their `src` attribute.
+- Extracts byline information from meta tags.
+- Supports platform-specific processing for various websites.
+- Uses Mozilla's Readability for content extraction.
+- Allows custom fetching logic through the `fetcher` option.
