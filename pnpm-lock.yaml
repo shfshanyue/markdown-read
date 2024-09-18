@@ -17,9 +17,6 @@ importers:
       '@types/turndown':
         specifier: ^5.0.5
         version: 5.0.5
-      '@vitest/coverage-v8':
-        specifier: ^2.1.1
-        version: 2.1.1(vitest@2.1.1(@types/node@20.6.3)(jsdom@25.0.0))
       jsdom:
         specifier: ^25.0.0
         version: 25.0.0
@@ -29,13 +26,13 @@ importers:
       turndown-plugin-gfm:
         specifier: ^1.0.2
         version: 1.0.2
-      yargs:
-        specifier: ^17.7.2
-        version: 17.7.2
     devDependencies:
       '@types/yargs':
         specifier: ^17.0.33
         version: 17.0.33
+      '@vitest/coverage-v8':
+        specifier: ^2.1.1
+        version: 2.1.1(vitest@2.1.1(@types/node@20.6.3)(jsdom@25.0.0))
       chai:
         specifier: ^5.1.1
         version: 5.1.1
@@ -51,6 +48,9 @@ importers:
       vitest:
         specifier: ^2.1.1
         version: 2.1.1(@types/node@20.6.3)(jsdom@25.0.0)
+      yargs:
+        specifier: ^17.7.2
+        version: 17.7.2
 
 packages:
 
