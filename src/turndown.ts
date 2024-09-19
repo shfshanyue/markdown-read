@@ -1,16 +1,7 @@
 import TurndownService from 'turndown'
-import { LANGUAGES } from './language'
+import { detectLanguage } from './language'
 
 const { tables } = require('turndown-plugin-gfm')
-
-function detectLanguage (className: string): string {
-  for (const lang of LANGUAGES) {
-    if (new RegExp(`\\b${lang}\\b`).test(className)) {
-      return lang
-    }
-  }
-  return 'auto'
-}
 
 const turndownService = new TurndownService({
   emDelimiter: '*',
@@ -35,7 +26,7 @@ turndownService.addRule('autoLanguage', {
   replacement (content, node, options) {
     node = node as HTMLElement
     const className = [node.className, node.firstElementChild?.className].join(' ')
-    const language = (className.match(/language-(\S+)/) || [null, detectLanguage(className)])[1]
+    const language = detectLanguage(className)
     const code = node.textContent || ''
     const fence = options.fence
 

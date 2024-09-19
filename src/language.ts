@@ -78,3 +78,18 @@ export const LANGUAGES = [
   'yaml',
   'yml'
 ]
+
+
+export function detectLanguage (className: string): string {
+  const languageMatch = className.match(/(?:language|lang)-(\S+)/)
+  if (languageMatch) {
+    return languageMatch[1]
+  }
+
+  for (const lang of LANGUAGES) {
+    if (new RegExp(`\\b${lang}\\b`).test(className)) {
+      return lang
+    }
+  }
+  return ''
+}
