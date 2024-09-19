@@ -26,7 +26,7 @@ turndownService.addRule('autoLanguage', {
   replacement (content, node, options) {
     node = node as HTMLElement
     const className = [node.className, node.firstElementChild?.className].join(' ')
-    const language = detectLanguage(className)
+    const language = node.dataset.language || node.dataset.lang || detectLanguage(className)
     const code = node.textContent || ''
     const fence = options.fence
 
