@@ -1,6 +1,6 @@
 {
   "name": "markdown-read",
-  "version": "3.6.1",
+  "version": "3.6.2",
   "description": "turn url or html file to markdown",
   "main": "./dist/index.js",
   "packageManager": "pnpm@9.9.0",
