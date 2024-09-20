@@ -1,7 +1,21 @@
+import { JSDOM } from 'jsdom'
 import { readability, markdown, turndown, getDocument, detectLanguage } from './src'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-describe('markdown', function () {
+describe('readability', () => {
+  let mockDocument: Document
+
+  beforeEach(() => {
+    const dom = new JSDOM()
+    global.document = dom.window.document
+    mockDocument = document.implementation.createHTMLDocument()
+    mockDocument.body.innerHTML = `
+      <h1>Test Title</h1>
+      <p>Test content</p>
+      <img src="lazy.jpg" data-src="actual.jpg" class="lazy">
+    `
+  })
+
   it('expect readability work', async () => {
     const doc = await getDocument('https://juejin.cn/post/6922229465468633095')
     const r = await readability(doc)
@@ -9,8 +23,39 @@ describe('markdown', function () {
     expect(r?.byline).to.eq('程序员山月')
   })
 
-  it('expect markdown work', async () => {
+  it('should handle lazy-loaded images', async () => {
+    const result = await readability(mockDocument)
+    expect(result?.content).to.include('src="actual.jpg"')
+  })
 
+  it('should extract byline from meta tag', async () => {
+    const metaTag = mockDocument.createElement('meta')
+    metaTag.setAttribute('itemprop', 'name')
+    metaTag.setAttribute('content', 'Test Author')
+    mockDocument.head.appendChild(metaTag)
+
+    const result = await readability(mockDocument)
+    expect(result?.byline).to.eq('Test Author')
+  })
+
+  it('should return full HTML content when platform skip is true', async () => {
+    vi.mock('./src/platform/index', () => ({
+      platforms: [{
+        filter: () => true,
+        skip: true,
+        processDocument: vi.fn()
+      }]
+    }))
+
+    const result = await readability(mockDocument)
+    expect(result?.content).to.include('<h1>Test Title</h1>')
+    expect(result?.content).to.include('<p>Test content</p>')
+  })
+
+})
+
+describe('markdown', function () {
+  it('expect markdown work', async () => {
     const r = await markdown('https://juejin.cn/post/6922229465468633095')
     expect(r?.markdown).to.length.gt(100)
   })
