@@ -2,7 +2,7 @@ import { ReadOptions, getDocument } from './document'
 import { readability, type ReadabilityContent } from './readability'
 import { turndown } from './turndown'
 
-interface MarkdownContent extends ReadabilityContent {
+export interface MarkdownContent extends ReadabilityContent {
   markdown: string;
 }
 
