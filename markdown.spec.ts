@@ -25,6 +25,12 @@ describe('markdown', function () {
     expect(r?.title).to.eq('Node Weekly Issue 522: February 27, 2024')
   })
 
+  it('expect markdown function to return correct URL', async () => {
+    const testUrl = 'https://example.com/test-page'
+    const r = await markdown(testUrl)
+    expect(r).not.to.be.null
+    expect(r?.url).to.eq(testUrl)
+  })
 })
 
 describe('getDocument', () => {

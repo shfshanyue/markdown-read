@@ -2,6 +2,7 @@ import { Readability } from '@mozilla/readability'
 import { platforms } from './platform/index'
 
 export interface ReadabilityContent {
+  url: string;
   title: string;
   content: string;
   length?: number;
@@ -45,6 +46,8 @@ function handlePlatforms(document: Document) {
  * 5. Returns the parsed article content or the full HTML content if skipped.
  */
 async function readability(document: Document, { debug }: { debug: boolean } = { debug: false }): Promise<ReadabilityContent | null> {
+  const url = document.URL;
+
   // Handle LazyLoad Image
   for (const img of Array.from(document.getElementsByTagName('img'))) {
     if (!img.getAttribute('src')) {
@@ -64,6 +67,7 @@ async function readability(document: Document, { debug }: { debug: boolean } = {
 
   if (skip) {
     return {
+      url,
       title: document.title,
       content: document.body.innerHTML,
       byline
@@ -75,11 +79,16 @@ async function readability(document: Document, { debug }: { debug: boolean } = {
   })
 
   const article = reader.parse()
-  if (article && byline) {
+  if (!article) {
+    return null
+  }
+  if (byline) {
     article.byline = byline
   }
-
-  return article
+  return {
+    ...article,
+    url
+  }
 }
 
 export { readability }

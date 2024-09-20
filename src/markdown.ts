@@ -21,11 +21,13 @@ async function markdown(url: string, options?: ReadOptions): Promise<MarkdownCon
   
   // If readability fails, return null
   if (!data) { return null }
+  const markdown = turndown(data.content)
   
-  // Convert the HTML content to Markdown and return the result
   return {
-    markdown: turndown(data.content),
-    ...data
+    ...data,
+    markdown,
+    length: markdown.length,
+    url
   }
 }
 
