@@ -1,6 +1,5 @@
 import TurndownService from "turndown"
 import * as juejin from './juejin'
-import * as sf from './sf'
 import * as zhihu from './zhihu'
 import * as weixin from './weixin'
 import * as mdn from './mdn'
@@ -13,4 +12,4 @@ interface PlatformProcess {
   skip?: boolean;
 }
 
-export const platforms: PlatformProcess[] = [juejin, sf, zhihu, weixin, mdn, weekly]
+export const platforms: PlatformProcess[] = [juejin, zhihu, weixin, mdn, weekly]
