@@ -77,13 +77,48 @@ Converts a web page to Markdown format.
 
 Returns a Promise that resolves to a `MarkdownContent` object or `null` if conversion fails.
 
-### `turndown(html: string): string`
+### `turndown(html: string, options?: TurndownService.Options): string`
 
 Converts HTML content to Markdown.
 
 - `html`: The HTML string to convert
+- `options`: Optional settings for Turndown conversion. These options will override the default settings.
 
 Returns the Markdown representation of the input HTML.
+
+#### Default Options
+
+```javascript
+{
+  emDelimiter: '*',
+  codeBlockStyle: 'fenced',
+  fence: '```',
+  headingStyle: 'atx',
+  bulletListMarker: '+'
+}
+```
+
+#### Example
+
+```javascript
+import { turndown } from 'markdown-read';
+
+const html = '<h1>Hello</h1><em>World</em>';
+const options = {
+  headingStyle: 'setext',
+  emDelimiter: '_'
+};
+
+const markdown = turndown(html, options);
+console.log(markdown);
+// Output:
+// Hello
+// =====
+//
+// _World_
+```
+
+For a full list of available options, please refer to the [Turndown Options documentation](https://github.com/mixmark-io/turndown#options).
 
 ## Advanced Features
 

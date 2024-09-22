@@ -19,67 +19,71 @@ function getTextWithLineBreaks(node: HTMLElement): string {
   return text;
 }
 
-const turndownService = new TurndownService({
-  emDelimiter: '*',
-  codeBlockStyle: 'fenced',
-  fence: '```',
-  headingStyle: 'atx',
-  bulletListMarker: '+'
-})
+function addCustomRules(service: TurndownService) {
+  service.addRule('fencedCodeBlockWithCodeElement', {
+    filter(node, options) {
+      return Boolean(
+        options.codeBlockStyle === 'fenced' &&
+        node.nodeName === 'PRE' &&
+        node.firstChild &&
+        node.firstChild.nodeName === 'CODE'
+      )
+    },
 
-turndownService.use([tables])
+    replacement(content, node, options) {
+      node = node as HTMLElement
+      const className = [node.className, node.firstElementChild?.className].join(' ')
+      const language = node.dataset?.language || node.dataset?.lang || node.getAttribute('data-language') || node.getAttribute('data-lang') || detectLanguage(className)
+      const code = node.textContent || ''
+      const fence = options.fence
 
-turndownService.addRule('fencedCodeBlockWithCodeElement', {
-  filter (node, options) {
-    return Boolean(
-      options.codeBlockStyle === 'fenced' &&
-      node.nodeName === 'PRE' &&
-      node.firstChild &&
-      node.firstChild.nodeName === 'CODE'
-    )
-  },
+      return (
+        '\n\n' + fence + language + '\n' +
+        code.replace(/\n$/, '') +
+        '\n' + fence + '\n\n'
+      )
+    }
+  })
 
-  replacement (content, node, options) {
-    node = node as HTMLElement
-    const className = [node.className, node.firstElementChild?.className].join(' ')
-    const language = node.dataset?.language || node.dataset?.lang || node.getAttribute('data-language') || node.getAttribute('data-lang') || detectLanguage(className)
-    const code = node.textContent || ''
-    const fence = options.fence
+  service.addRule('fencedCodeBlockWithoutCodeElement', {
+    filter(node, options) {
+      return Boolean(
+        options.codeBlockStyle === 'fenced' &&
+        node.nodeName === 'PRE' &&
+        node.firstChild?.nodeName !== 'CODE'
+      )
+    },
 
-    return (
-      '\n\n' + fence + language + '\n' +
-      code.replace(/\n$/, '') +
-      '\n' + fence + '\n\n'
-    )
-  }
-})
+    replacement(content, node, options) {
+      node = node as HTMLElement
+      const className = [node.className, node.firstElementChild?.className, node.parentElement?.className].join(' ')
+      const language = node.dataset?.language || node.dataset?.lang || node.getAttribute('data-language') || node.getAttribute('data-lang') || detectLanguage(className)
+      const code = getTextWithLineBreaks(node) || ''
+      const fence = options.fence
 
-turndownService.addRule('fencedCodeBlockWithoutCodeElement', {
-  filter (node, options) {
-    return Boolean(
-      options.codeBlockStyle === 'fenced' &&
-      node.nodeName === 'PRE' &&
-      node.firstChild?.nodeName !== 'CODE'
-    )
-  },
+      return (
+        '\n\n' + fence + language + '\n' +
+        code.replace(/\n$/, '') +
+        '\n' + fence + '\n\n'
+      )
+    }
+  })
 
-  replacement (content, node, options) {
-    node = node as HTMLElement
-    const className = [node.className, node.firstElementChild?.className, node.parentElement?.className].join(' ')
-    const language = node.dataset?.language || node.dataset?.lang || node.getAttribute('data-language') || node.getAttribute('data-lang') || detectLanguage(className)
-    const code = getTextWithLineBreaks(node) || ''
-    const fence = options.fence
-
-    return (
-      '\n\n' + fence + language + '\n' +
-      code.replace(/\n$/, '') +
-      '\n' + fence + '\n\n'
-    )
-  }
-})
-
-function turndown (text: string): string {
-  return turndownService.turndown(text)
 }
 
-export { turndown }
+export type TurndownOptions = TurndownService.Options
+
+export function turndown(text: string, options?: TurndownOptions): string {
+  const customTurndownService = new TurndownService({
+    emDelimiter: '*',
+    codeBlockStyle: 'fenced',
+    fence: '```',
+    headingStyle: 'atx',
+    bulletListMarker: '+',
+    ...options
+  })
+
+  customTurndownService.use([tables]);
+  addCustomRules(customTurndownService);
+  return customTurndownService.turndown(text);
+}

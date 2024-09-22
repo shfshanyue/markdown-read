@@ -1,6 +1,7 @@
 import { JSDOM } from 'jsdom'
-import { readability, markdown, turndown, getDocument, detectLanguage } from './src'
+import { readability, markdown, turndown, getDocument, detectLanguage, TurndownOptions } from './src'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import TurndownService from 'turndown'
 
 describe('readability', () => {
   let mockDocument: Document
@@ -130,6 +131,34 @@ describe('turndown', () => {
 <span class="pl-en">sum</span><span class="pl-kos">(</span><span class="pl-kos">[</span><span class="pl-c1">1</span><span class="pl-kos">,</span> <span class="pl-c1">3</span><span class="pl-kos">,</span> <span class="pl-c1">5</span><span class="pl-kos">,</span> <span class="pl-c1">7</span><span class="pl-kos">,</span> <span class="pl-c1">9</span><span class="pl-kos">]</span><span class="pl-kos">)</span></pre></div>`
       const result = turndown(html)
       expect(result).to.eq("```js\nimport { sum } from 'midash'\n\nsum([1, 3, 5, 7, 9])\n```")
+    })
+  })
+
+  describe('options', () => {
+    it('should use custom options when provided', () => {
+      const html = '<h1>Hello</h1><em>World</em>'
+      const options: TurndownOptions = {
+        headingStyle: 'setext',
+        emDelimiter: '_'
+      }
+      const result = turndown(html, options)
+      expect(result).to.eq('Hello\n=====\n\n_World_')
+    })
+
+    it('should override default options', () => {
+      const html = '<h2>Test</h2><ul><li>Item 1</li><li>Item 2</li></ul>'
+      const options: TurndownOptions = {
+        headingStyle: 'setext',
+        bulletListMarker: '*'
+      }
+      const result = turndown(html, options)
+      expect(result).to.eq('Test\n----\n\n*   Item 1\n*   Item 2')
+    })
+
+    it('should use default options when not provided', () => {
+      const html = '<h2>Default</h2><ul><li>Item 1</li><li>Item 2</li></ul>'
+      const result = turndown(html)
+      expect(result).to.eq('## Default\n\n+   Item 1\n+   Item 2')
     })
   })
 })
