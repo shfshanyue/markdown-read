@@ -3,6 +3,22 @@ import { detectLanguage } from './language'
 
 const { tables } = require('turndown-plugin-gfm')
 
+function getTextWithLineBreaks(node: HTMLElement): string {
+  let text = '';
+  for (const childNode of node.childNodes) {
+    if (childNode.nodeType === 3) {
+      // NODE.TEXT_NODE
+      text += childNode.textContent;
+    } else if (childNode.nodeName === 'BR') {
+      text += '\n';
+    } else if (childNode.nodeType === 1) {
+      // NODE.ELEMENT_NODE
+      text += getTextWithLineBreaks(childNode as HTMLElement);
+    }
+  }
+  return text;
+}
+
 const turndownService = new TurndownService({
   emDelimiter: '*',
   codeBlockStyle: 'fenced',
@@ -51,7 +67,7 @@ turndownService.addRule('fencedCodeBlockWithoutCodeElement', {
     node = node as HTMLElement
     const className = [node.className, node.firstElementChild?.className, node.parentElement?.className].join(' ')
     const language = node.dataset?.language || node.dataset?.lang || node.getAttribute('data-language') || node.getAttribute('data-lang') || detectLanguage(className)
-    const code = node.textContent || ''
+    const code = getTextWithLineBreaks(node) || ''
     const fence = options.fence
 
     return (

@@ -1,5 +1,4 @@
 export const LANGUAGES = [
-  'auto',
   'apache',
   'shell',
   'text',

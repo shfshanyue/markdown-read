@@ -116,6 +116,21 @@ describe('turndown', () => {
       const result = turndown(html)
       expect(result).to.eq('```\nline1\nline2\nline3\n```')
     })
+
+    it('should handle pre tag with br elements', async () => {
+      const html = '<pre>line1<br>line2<br />line3</pre>'
+      const result = turndown(html)
+      expect(result).to.eq('```\nline1\nline2\nline3\n```')
+    })
+
+    // New test case
+    it('should handle complex pre tag with nested elements and classes', async () => {
+      const html = `<div class="highlight highlight-source-js notranslate position-relative overflow-auto" dir="auto"><pre><span class="pl-k">import</span> <span class="pl-kos">{</span> <span class="pl-s1">sum</span> <span class="pl-kos">}</span> <span class="pl-k">from</span> <span class="pl-s">'midash'</span>
+
+<span class="pl-en">sum</span><span class="pl-kos">(</span><span class="pl-kos">[</span><span class="pl-c1">1</span><span class="pl-kos">,</span> <span class="pl-c1">3</span><span class="pl-kos">,</span> <span class="pl-c1">5</span><span class="pl-kos">,</span> <span class="pl-c1">7</span><span class="pl-kos">,</span> <span class="pl-c1">9</span><span class="pl-kos">]</span><span class="pl-kos">)</span></pre></div>`
+      const result = turndown(html)
+      expect(result).to.eq("```js\nimport { sum } from 'midash'\n\nsum([1, 3, 5, 7, 9])\n```")
+    })
   })
 })
 
