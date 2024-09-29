@@ -49,35 +49,29 @@ Example:
 $ markdown https://httpbin.org/get --header 'User-Agent: Markdown Reader'
 ```
 
-## Support Plaforms
-
-markdown-read includes special handling for various platforms, including:
-
-1. 掘金
-1. 知乎
-1. 博客园
-1. 微信公众号平台
-1. Segmentfault
-1. Github
-1. dev.to
-1. CSDN
-1. MDN
-
-
 ## API Reference
 
-### `markdown(url: string, options?: ReadOptions): Promise<MarkdownContent | null>`
+### `markdown(url: string, options?: MarkdownOptions): Promise<MarkdownContent | null>`
 
 Converts a web page to Markdown format.
 
 - `url`: The URL of the web page to convert
-- `options`: Optional settings for document retrieval
+- `options`: Optional settings for document retrieval and Markdown conversion
   - `headers`: Additional headers to include in the request
   - `fetcher`: Custom function to fetch the HTML content
+  - All options from `TurndownOptions` are also supported
 
 Returns a Promise that resolves to a `MarkdownContent` object or `null` if conversion fails.
 
-### `turndown(html: string, options?: TurndownService.Options): string`
+#### MarkdownContent
+
+The `MarkdownContent` object extends `ReadabilityContent` and includes:
+
+- `markdown`: The converted Markdown content
+- `length`: The length of the Markdown content
+- `url`: The original URL of the web page
+
+### `turndown(html: string, options?: TurndownOptions): string`
 
 Converts HTML content to Markdown.
 

@@ -1,5 +1,5 @@
 import { JSDOM } from 'jsdom'
-import { readability, markdown, turndown, getDocument, detectLanguage, TurndownOptions } from './src'
+import { readability, markdown, turndown, getDocument, detectLanguage, TurndownOptions, MarkdownOptions } from './src'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import TurndownService from 'turndown'
 
@@ -78,6 +78,92 @@ describe('markdown', function () {
     expect(r?.url).to.eq(testUrl)
   })
 
+  it('should use custom TurndownOptions when provided', async () => {
+    const testUrl = 'https://example.com/test-page'
+    const mockHtml = `
+      <html>
+        <body>
+          <h1>Test Title</h1>
+          <ul>
+            <li>List item 1</li>
+            <li>List item 2</li>
+          </ul>
+        </body>
+      </html>
+    `
+    const customFetcher = vi.fn().mockResolvedValue(mockHtml)
+    
+    const customOptions: MarkdownOptions = {
+      headingStyle: 'setext',
+      bulletListMarker: '*',
+      fetcher: customFetcher
+    }
+
+    const r = await markdown(testUrl, customOptions)
+    
+    expect(customFetcher).toHaveBeenCalledWith(testUrl)
+    expect(r).not.to.be.null
+    expect(r?.markdown).to.include('Test Title\n=========')
+    expect(r?.markdown).to.include('*   List item 1')
+    expect(r?.markdown).to.include('*   List item 2')
+  })
+
+  it('should use underscore as bullet list marker when specified', async () => {
+    const testUrl = 'https://example.com/test-page'
+    const mockHtml = `
+      <html>
+        <body>
+          <h1>Test Title</h1>
+          <ul>
+            <li>List item 1</li>
+            <li>List item 2</li>
+          </ul>
+        </body>
+      </html>
+    `
+    const customFetcher = vi.fn().mockResolvedValue(mockHtml)
+    
+    const customOptions: MarkdownOptions = {
+      bulletListMarker: '+',
+      fetcher: customFetcher
+    }
+
+    const r = await markdown(testUrl, customOptions)
+    
+    expect(customFetcher).toHaveBeenCalledWith(testUrl)
+    expect(r).not.to.be.null
+    expect(r?.markdown).to.include('+   List item 1')
+    expect(r?.markdown).to.include('+   List item 2')
+  })
+
+  it('should include length property in MarkdownContent', async () => {
+    const testUrl = 'https://example.com/test-page'
+    const r = await markdown(testUrl)
+    expect(r).not.to.be.null
+    expect(r?.length).to.be.a('number')
+    expect(r?.length).to.equal(r?.markdown.length)
+  })
+
+  it('should use custom headers when provided', async () => {
+    const testUrl = 'https://httpbin.org/headers'
+    const customHeaders = { 'X-Custom-Header': 'Test' }
+    const r = await markdown(testUrl, { headers: customHeaders })
+    expect(r).not.to.be.null
+    expect(r?.markdown).to.include('X-Custom-Header')
+    expect(r?.markdown).to.include('Test')
+  })
+
+  it('should use custom fetcher when provided', async () => {
+    const testUrl = 'https://example.com/test-page'
+    const mockHtml = '<html><body><h1>Custom Fetcher Test</h1></body></html>'
+    const customFetcher = vi.fn().mockResolvedValue(mockHtml)
+    
+    const r = await markdown(testUrl, { fetcher: customFetcher })
+    
+    expect(customFetcher).toHaveBeenCalledWith(testUrl)
+    expect(r).not.to.be.null
+    expect(r?.markdown).to.include('# Custom Fetcher Test')
+  })
 })
 
 describe('turndown', () => {
