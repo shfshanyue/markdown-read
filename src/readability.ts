@@ -1,33 +1,88 @@
 import { Readability } from '@mozilla/readability'
 import { platforms } from './platform/index'
+import { ReadabilityError } from './lib/errors';
 
+/**
+ * Represents the structured content extracted from a web page.
+ */
 export interface ReadabilityContent {
+  /** The URL of the original page */
   url: string;
+  /** The article title */
   title: string;
+  /** The article content as HTML */
   content: string;
+  /** The length of the content in characters */
   length?: number;
+  /** A short excerpt from the article */
   excerpt?: string;
+  /** The author of the article */
   byline?: string;
+  /** The reading direction (ltr or rtl) */
   dir?: string;
+  /** The name of the website */
   siteName?: string;
+  /** The language of the content */
   lang?: string;
+  /** The publication date/time of the article */
   publishedTime?: string;
 }
 
+/**
+ * Configuration options for the readability process.
+ */
+export interface ReadabilityOptions {
+  /** Whether to enable debug mode */
+  debug?: boolean;
+  /** Skip image processing */
+  skipImages?: boolean;
+}
 
-const noop = () => { }
+// Disable some Readability features that might interfere with our needs
+const noop = () => { };
 (Readability.prototype as any).FLAG_STRIP_UNLIKELYS = 0;
 (Readability.prototype as any)._cleanHeaders = noop;
 (Readability.prototype as any)._headerDuplicatesTitle = () => false;
 
+/**
+ * Checks if the document matches any of the defined platform handlers.
+ * 
+ * @param document - The Document object to check
+ * @returns The matching platform handler or null if none match
+ */
 function handlePlatforms(document: Document) {
+  const url = new URL(document.URL);
+  
   for (const platform of platforms) {
-    const url = new URL(document.URL)
     if (platform.filter(document, url)) {
-      return platform
+      return platform;
     }
   }
-  return null
+  
+  return null;
+}
+
+/**
+ * Processes images in the document to handle lazy loading.
+ * 
+ * @param document - The Document object to process
+ */
+function handleLazyImages(document: Document): void {
+  // Find all img elements
+  const images = Array.from(document.getElementsByTagName('img'));
+  
+  for (const img of images) {
+    if (!img.getAttribute('src')) {
+      // Remove class to avoid interference with readability's lazy load handling
+      img.removeAttribute('class');
+      
+      // Check for data-src attribute (common for lazy-loaded images)
+      const dataSrc = img.dataset?.src;
+      if (dataSrc) {
+        img.setAttribute('src', dataSrc);
+      }
+    }
+  }
 }
 
 /**
@@ -35,8 +90,8 @@ function handlePlatforms(document: Document) {
  * 
  * @param document - The HTML Document object to process.
  * @param options - Configuration options for the readability process.
- * @param options.debug - Whether to enable debug mode. Default is false.
- * @returns A Promise that resolves to a ReadabilityContent object or null if parsing fails.
+ * @returns A Promise that resolves to a ReadabilityContent object.
+ * @throws {ReadabilityError} When parsing fails or the document is invalid.
  * 
  * This function performs the following steps:
  * 1. Handles lazy-loaded images by setting their src attribute.
@@ -44,50 +99,112 @@ function handlePlatforms(document: Document) {
  * 3. Processes the document using platform-specific handlers if applicable.
  * 4. If the platform doesn't require skipping, it uses Mozilla's Readability to parse the content.
  * 5. Returns the parsed article content or the full HTML content if skipped.
+ * 
+ * @example
+ * ```typescript
+ * try {
+ *   const document = await getDocument('https://example.com');
+ *   const content = await readability(document);
+ *   console.log(content.title);
+ * } catch (error) {
+ *   console.error('Extraction failed:', error.message);
+ * }
+ * ```
  */
-async function readability(document: Document, { debug }: { debug: boolean } = { debug: false }): Promise<ReadabilityContent | null> {
-  const url = document.URL;
-
-  // Handle LazyLoad Image
-  for (const img of Array.from(document.getElementsByTagName('img'))) {
-    if (!img.getAttribute('src')) {
-      // readbility 将会拿到 lazy 的 class，重新处理懒加载
-      img.removeAttribute('class')
-      img.setAttribute('src', img.dataset?.src || '')
-    }
+async function readability(
+  document: Document, 
+  { debug = false, skipImages = false }: ReadabilityOptions = {}
+): Promise<ReadabilityContent> {
+  if (!document || !(document instanceof Document)) {
+    throw ReadabilityError.invalidDocument();
   }
-
-  const byline = document.querySelector('meta[itemprop=name]')?.getAttribute('content') || ''
-
-  const platform = handlePlatforms(document)
-  await platform?.processDocument(document)
-
-  // Is skip Readaility process
-  const skip = platform?.skip
-
-  if (skip) {
+  
+  try {
+    const url = document.URL;
+    
+    // Process lazy-loaded images unless skipped
+    if (!skipImages) {
+      handleLazyImages(document);
+    }
+    
+    // Extract byline from meta tag if available
+    const byline = document.querySelector('meta[itemprop=name]')?.getAttribute('content') ?? '';
+    
+    // Check if the document matches a specific platform
+    const platform = handlePlatforms(document);
+    
+    // Apply platform-specific processing if available
+    if (platform) {
+      try {
+        await platform.processDocument?.(document);
+      } catch (error) {
+        if (error instanceof Error) {
+          // Find platform name through its index in the platforms array
+          const platformName = platforms.findIndex(p => p === platform) >= 0 
+            ? Object.keys(platforms).find(key => platforms[key as any] === platform) || 'unknown platform'
+            : 'unknown platform';
+          
+          throw ReadabilityError.platformError(
+            url,
+            platformName,
+            error
+          );
+        }
+      }
+    }
+    
+    // Skip Readability if the platform handler requires it
+    if (platform?.skip) {
+      return {
+        url,
+        title: document.title,
+        content: document.body.innerHTML,
+        byline: byline || undefined
+      };
+    }
+    
+    // Create a Readability parser
+    const reader = new Readability(document, {
+      keepClasses: true,
+      debug,
+    });
+    
+    // Parse the document to extract readable content
+    const article = reader.parse();
+    
+    if (!article) {
+      throw ReadabilityError.extractionFailed(url, document);
+    }
+    
+    // Add the byline if we extracted one
+    if (byline && !article.byline) {
+      article.byline = byline;
+    }
+    
+    // Return the article with the URL added
     return {
-      url,
-      title: document.title,
-      content: document.body.innerHTML,
-      byline
+      ...article,
+      url
+    };
+  } catch (error) {
+    // If the error is already a ReadabilityError, rethrow it
+    if (error instanceof ReadabilityError) {
+      throw error;
     }
-  }
-  const reader = new Readability(document, {
-    keepClasses: true,
-    debug,
-  })
-
-  const article = reader.parse()
-  if (!article) {
-    return null
-  }
-  if (byline) {
-    article.byline = byline
-  }
-  return {
-    ...article,
-    url
+    
+    // Otherwise, wrap it in a ReadabilityError with context
+    const contextHtml = document.documentElement.outerHTML;
+    
+    throw new ReadabilityError(
+      `Readability extraction failed: ${error instanceof Error ? error.message : String(error)}`,
+      {
+        url: document.URL,
+        title: document.title,
+        html: contextHtml,
+        debugMode: debug,
+      },
+      error instanceof Error ? error : undefined
+    );
   }
 }
 
