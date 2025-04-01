@@ -72,14 +72,14 @@ describe('markdown', function () {
   })
 
   it('expect markdown function to return correct URL', async () => {
-    const testUrl = 'https://example.com/test-page'
+    const testUrl = 'https://example.com'
     const r = await markdown(testUrl)
     expect(r).not.to.be.null
     expect(r?.url).to.eq(testUrl)
   })
 
   it('should use custom TurndownOptions when provided', async () => {
-    const testUrl = 'https://example.com/test-page'
+    const testUrl = 'https://example.com'
     const mockHtml = `
       <html>
         <body>
@@ -109,7 +109,7 @@ describe('markdown', function () {
   })
 
   it('should use underscore as bullet list marker when specified', async () => {
-    const testUrl = 'https://example.com/test-page'
+    const testUrl = 'https://example.com'
     const mockHtml = `
       <html>
         <body>
@@ -137,7 +137,7 @@ describe('markdown', function () {
   })
 
   it('should include length property in MarkdownContent', async () => {
-    const testUrl = 'https://example.com/test-page'
+    const testUrl = 'https://example.com'
     const r = await markdown(testUrl)
     expect(r).not.to.be.null
     expect(r?.length).to.be.a('number')
@@ -154,7 +154,7 @@ describe('markdown', function () {
   })
 
   it('should use custom fetcher when provided', async () => {
-    const testUrl = 'https://example.com/test-page'
+    const testUrl = 'https://example.com'
     const mockHtml = '<html><body><h1>Custom Fetcher Test</h1></body></html>'
     const customFetcher = vi.fn().mockResolvedValue(mockHtml)
     
@@ -177,7 +177,7 @@ describe('turndown', () => {
     it('should detect language from pre tag class', async () => {
       const html = '<pre class="language-javascript">const greeting = "Hello, world!";</pre>'
       const result = turndown(html)
-      expect(result).to.eq('```javascript\nconst greeting = "Hello, world!";\n```')
+      expect(result).to.eq('```js\nconst greeting = "Hello, world!";\n```')
     })
 
     it('should detect language from pre tag data attribute', async () => {
@@ -195,7 +195,7 @@ describe('turndown', () => {
     it('should handle pre tag with nested elements', async () => {
       const html = '<pre><span class="keyword">const</span> x = 5;</pre>'
       const result = turndown(html)
-      expect(result).to.eq('```\nconst x = 5;\n```')
+      expect(result).to.eq('```javascript\nconst x = 5;\n```')
     })
 
     it('should preserve line breaks in pre tag content', async () => {

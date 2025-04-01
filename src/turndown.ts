@@ -1,5 +1,5 @@
 import TurndownService from 'turndown'
-import { detectProgrammingLanguage } from './language'
+import { detectProgrammingLanguage } from './lib/language'
 import { TurndownError } from './lib/errors';
 
 /**
@@ -18,13 +18,13 @@ function getTextWithLineBreaks(node: HTMLElement): string {
   let text = '';
   
   for (const childNode of node.childNodes) {
-    if (childNode.nodeType === Node.TEXT_NODE) {
+    if (childNode.nodeType === childNode.TEXT_NODE) {
       // Extract text content
       text += childNode.textContent ?? '';
     } else if (childNode.nodeName === 'BR') {
       // Convert <br> elements to newlines
       text += '\n';
-    } else if (childNode.nodeType === Node.ELEMENT_NODE) {
+    } else if (childNode.nodeType === childNode.ELEMENT_NODE) {
       // Recursively process element nodes
       text += getTextWithLineBreaks(childNode as HTMLElement);
     }
