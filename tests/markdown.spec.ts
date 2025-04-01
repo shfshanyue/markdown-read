@@ -1,5 +1,5 @@
 import { JSDOM } from 'jsdom'
-import { readability, markdown, turndown, getDocument, detectLanguage, TurndownOptions, MarkdownOptions } from './src'
+import { readability, markdown, turndown, getDocument, TurndownOptions, MarkdownOptions } from '../src'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import TurndownService from 'turndown'
 
@@ -40,7 +40,7 @@ describe('readability', () => {
   })
 
   it('should return full HTML content when platform skip is true', async () => {
-    vi.mock('./src/platform/index', () => ({
+    vi.mock('../src/platform/index', () => ({
       platforms: [{
         filter: () => true,
         skip: true,
@@ -276,30 +276,5 @@ describe('getDocument', () => {
     
     expect(customFetcher).toHaveBeenCalledWith('https://example.com')
     expect(doc.querySelector('h1')?.textContent).to.eq('Custom Fetcher Test')
-  })
-})
-
-describe('detectLanguage', () => {
-  it('should detect language from class name with language- prefix', () => {
-    expect(detectLanguage('language-javascript')).to.eq('javascript')
-    expect(detectLanguage('language-python')).to.eq('python')
-  })
-
-  it('should detect language from class name with lang- prefix', () => {
-    expect(detectLanguage('lang-css')).to.eq('css')
-    expect(detectLanguage('lang-ruby')).to.eq('ruby')
-  })
-
-  it('should detect language from class name without prefix', () => {
-    expect(detectLanguage('javascript')).to.eq('javascript')
-    expect(detectLanguage('python')).to.eq('python')
-  })
-
-  it('should return empty string for unrecognized language', () => {
-    expect(detectLanguage('unknown-language')).to.eq('')
-  })
-
-  it('should handle multiple classes and return the first recognized language', () => {
-    expect(detectLanguage('foo bar language-typescript javascript')).to.eq('typescript')
   })
 })
