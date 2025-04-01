@@ -1,6 +1,7 @@
 import { Readability } from '@mozilla/readability'
 import { platforms } from './platform/index'
 import { ReadabilityError } from './lib/errors';
+import { JSDOMDocument } from './document';
 
 /**
  * Represents the structured content extracted from a web page.
@@ -38,6 +39,9 @@ export interface ReadabilityOptions {
   skipImages?: boolean;
 }
 
+// 兼容类型，可以同时支持浏览器 Document 和 JSDOM Document
+export type CompatDocument = Document | JSDOMDocument;
+
 // Disable some Readability features that might interfere with our needs
 const noop = () => { };
 (Readability.prototype as any).FLAG_STRIP_UNLIKELYS = 0;
@@ -50,7 +54,7 @@ const noop = () => { };
  * @param document - The Document object to check
  * @returns The matching platform handler or null if none match
  */
-function handlePlatforms(document: Document) {
+function handlePlatforms(document: CompatDocument) {
   const url = new URL(document.URL);
   
   for (const platform of platforms) {
@@ -67,7 +71,7 @@ function handlePlatforms(document: Document) {
  * 
  * @param document - The Document object to process
  */
-function handleLazyImages(document: Document): void {
+function handleLazyImages(document: CompatDocument): void {
   // Find all img elements
   const images = Array.from(document.getElementsByTagName('img'));
   
@@ -83,6 +87,21 @@ function handleLazyImages(document: Document): void {
       }
     }
   }
+}
+
+/**
+ * Check if an object is a valid Document instance (works in both browser and Node.js environments)
+ * 
+ * @param obj - The object to check
+ * @returns True if the object is a valid document, false otherwise
+ */
+function isValidDocument(obj: any): obj is CompatDocument {
+  return obj && 
+    typeof obj === 'object' && 
+    'nodeType' in obj && 
+    'documentElement' in obj &&
+    'URL' in obj &&
+    'querySelector' in obj;
 }
 
 /**
@@ -112,10 +131,10 @@ function handleLazyImages(document: Document): void {
  * ```
  */
 async function readability(
-  document: Document, 
+  document: CompatDocument, 
   { debug = false, skipImages = false }: ReadabilityOptions = {}
 ): Promise<ReadabilityContent> {
-  if (!document || !(document instanceof Document)) {
+  if (!document || !isValidDocument(document)) {
     throw ReadabilityError.invalidDocument();
   }
   

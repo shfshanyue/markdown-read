@@ -4,11 +4,12 @@ import * as zhihu from './zhihu'
 import * as weixin from './weixin'
 import * as mdn from './mdn'
 import * as weekly from './weekly'
+import { CompatDocument } from '../readability'
 
 interface PlatformProcess {
-  filter: (doc: Document, url?: URL) => boolean;
-  processDocument: (doc: Document) => void | Promise<void>;
-  turndownPlugins: (turndown: TurndownService) => void;
+  filter: (doc: CompatDocument, url?: URL) => boolean;
+  processDocument?: (doc: CompatDocument) => void | Promise<void>;
+  turndownPlugins?: (turndown: TurndownService) => void;
   skip?: boolean;
 }
 

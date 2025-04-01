@@ -1,6 +1,9 @@
 import { JSDOM } from 'jsdom'
 import { DocumentError } from './lib/errors';
 
+// 导出 JSDOM 文档类型供其他模块使用
+export type JSDOMDocument = JSDOM['window']['document'];
+
 /**
  * Options for fetching and parsing HTML documents.
  * @interface ReadOptions
@@ -40,13 +43,13 @@ function isValidUrl(url: string): boolean {
  * @param options.fetcher - Custom function to fetch the HTML content.
  * @param options.timeout - Request timeout in milliseconds (default: 30000ms).
  * @param options.retries - Maximum number of retries for failed requests (default: 0).
- * @returns A Promise that resolves to the parsed Document object.
+ * @returns A Promise that resolves to the parsed JSDOM Document object.
  * @throws {DocumentError} When URL is invalid, network errors occur, or parsing fails.
  */
 async function getDocument(
   url: string, 
   { headers = {}, fetcher, timeout = 30000, retries = 0 }: ReadOptions = {}
-): Promise<Document> {
+): Promise<JSDOMDocument> {
   // Validate URL format
   if (!isValidUrl(url)) {
     throw DocumentError.invalidUrl(url);
