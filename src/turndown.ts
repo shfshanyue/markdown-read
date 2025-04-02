@@ -80,63 +80,14 @@ function addCustomRules(service: TurndownService): void {
     }
   });
 
-  // Rule for nested pre > pre > code structure
-  service.addRule('nestedPreCodeBlock', {
-    filter(node, options) {
-      return Boolean(
-        options.codeBlockStyle === 'fenced' &&
-        node.nodeName === 'PRE' &&
-        node.firstChild &&
-        node.firstChild.nodeName === 'PRE' &&
-        node.firstChild.firstChild &&
-        node.firstChild.firstChild.nodeName === 'CODE'
-      );
-    },
-
-    replacement(content, node, options) {
-      try {
-        const element = node as HTMLElement;
-        const preElement = element.firstChild as HTMLElement;
-        const codeElement = preElement.firstChild as HTMLElement;
-        
-        // Collect class names from all elements in the structure
-        const classNames = [
-          element.className,
-          preElement.className,
-          codeElement.className
-        ].join(' ');
-        
-        // Extract code text with line breaks preserved
-        const code = getTextWithLineBreaks(codeElement) || '';
-        
-        // Use comprehensive language detection
-        const language = detectProgrammingLanguage(classNames, code, element);
-        
-        const fence = options.fence as string;
-
-        return (
-          '\n\n' + fence + language + '\n' +
-          code.replace(/\n$/, '') +
-          '\n' + fence + '\n\n'
-        );
-      } catch (error) {
-        // If rule application fails, provide detailed error context
-        throw TurndownError.ruleApplicationFailed(
-          'nestedPreCodeBlock',
-          (node as HTMLElement).outerHTML,
-          error instanceof Error ? error : undefined
-        );
-      }
-    }
-  });
-
   // Rule for code blocks without <code> elements directly in <pre>
   service.addRule('fencedCodeBlockWithoutCodeElement', {
     filter(node, options) {
       return Boolean(
         options.codeBlockStyle === 'fenced' &&
         node.nodeName === 'PRE' &&
-        node.firstChild?.nodeName !== 'CODE'
+        node.firstChild?.nodeName !== 'CODE' &&
+        node.firstChild?.nodeName !== 'PRE'
       );
     },
 
