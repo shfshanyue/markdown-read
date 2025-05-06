@@ -10,7 +10,7 @@ export interface ReadabilityContent {
   /** The URL of the original page */
   url: string;
   /** The article title */
-  title: string;
+  title?: string;
   /** The article content as HTML */
   content: string;
   /** The length of the content in characters */
@@ -202,8 +202,16 @@ async function readability(
     
     // Return the article with the URL added
     return {
-      ...article,
-      url
+      url,
+      title: article.title || document.title || 'Untitled',
+      content: article.content || '',
+      length: article.length || undefined,
+      excerpt: article.excerpt || undefined,
+      byline: article.byline || undefined,
+      dir: article.dir || undefined,
+      siteName: article.siteName || undefined,
+      lang: article.lang || undefined,
+      publishedTime: article.publishedTime || undefined
     };
   } catch (error) {
     // If the error is already a ReadabilityError, rethrow it
